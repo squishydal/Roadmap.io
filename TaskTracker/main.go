@@ -15,6 +15,7 @@ type Task struct {
 
 func check(e error) {
 	if e != nil {
+		fmt.Println("Error:", e)
 		os.Exit(1)
 	}
 }
@@ -39,7 +40,6 @@ func load() {
 
 	err = json.Unmarshal(data, &job)
 	check(err)
-	fmt.Println("Tugas telah dimuat dari tasks.json")
 }
 func save() {
 	data, err := json.MarshalIndent(job, "", "    ")
@@ -92,7 +92,13 @@ func main() {
 	case "list":
 		fmt.Println("Daftar tugas :")
 		load()
-		fmt.Println(job)
+		for _, t := range job {
+			status := " "
+			if t.Status {
+				status = "x"
+			}
+			fmt.Printf("%d. [%s] %s\n", t.ID, status, t.Input)
+		}
 	case "update":
 		if len(os.Args) != 3 {
 			fmt.Println("Gunakan: update <ID>")
